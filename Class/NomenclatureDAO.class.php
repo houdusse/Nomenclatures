@@ -2,7 +2,7 @@
 namespace Algo\Nomenclatures;
 
 class NomenclatureDAO {
-
+// test
 	private static $instance;
 	private $db;
 
