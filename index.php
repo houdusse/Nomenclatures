@@ -1,9 +1,12 @@
 <?php
 use Algo\Nomenclatures\NoeudNomenclature;
+use Algo\Nomenclatures\NomenclatureDAO;
 
 // Mise en route de l'autoloader
 require 'class/autoloader.class.php';
 Algo\Nomenclatures\MountLoader::defLoader();
+
+
 
 
 // Premier niveau de l'arbre
@@ -30,6 +33,7 @@ $node10 = new NoeudNomenclature(10);
 $tableau = array($node9, $node10);
 $node4->ajoutEnfants($tableau);
 
+$racine->parcourPrefixe($node4);
 $racine->parcourPrefixe($node4);
 
 

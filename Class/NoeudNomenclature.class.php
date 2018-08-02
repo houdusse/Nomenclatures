@@ -8,10 +8,11 @@ namespace Algo\Nomenclatures;
  	// NoeudNomenclature::__construct($valeur array $listeLiensEnfants)
  	// NoeudNomenclature::
  
-	private $valeur;
-	private $pileEnfants; // Pile ou est stockée les enfants du noeud courant
+	Private $id;
+	private $valeur; // id du noeud 
+	private $pileEnfants;
 
-	public function __construct($valeur, array $listeEnfants = null) {
+	public function __construct($id = null, $valeur = null, array $listeEnfants = null) {
 		if ($listeEnfants !== null) {
 			$this->pileEnfants = new Pile();  
 			foreach ($listeEnfants as  $noeudEnfant) {
@@ -19,6 +20,7 @@ namespace Algo\Nomenclatures;
 			}
 		}
 		$this->valeur = $valeur;
+		$manager = NomenclatureDAO::createDAO();
 	}
 
 
@@ -39,20 +41,38 @@ namespace Algo\Nomenclatures;
 		echo $node->getValeur() .'<br>';
 		// parcour de la pile en depilant pour recuperer les noeuds enfants
 		if ($node->pileEnfants !== null) {
+			$pilePivot = new Pile();
 			while($node->pileEnfants->isVide() === false) {
 				$noeud = $node->pileEnfants->depiler();
+				$pilePivot->empiler($noeud);
 				$node->parcourPrefixe($noeud);
-			} 
+			}
+			// Reverser la pilePivot dans la pileEnfants
+			// Pour restaurer l'état de pileEnfant avant son parcours 
+			while($pilePivot->isVide() === false) {
+				$noeud = $pilePivot->depiler();
+				$node->pileEnfants->empiler($noeud);
+			}
+			unset($pilePivot);
 		}
 	}
 
 public  function parcourPostfixe(NoeudNomenclature $node) {
 		// parcour de la pile en depilant pour recuperer les noeuds enfants
 		if ($node->pileEnfants !== null) {
+			$pilePivot = new Pile();
 			while($node->pileEnfants->isVide() === false) {
 				$noeud = $node->pileEnfants->depiler();
-				$node->parcourPrefixe($noeud);
-			} 
+				$pilePivot->empiler($noeud);
+				$node->parcourPostfixe($noeud);
+			}
+			// Reverser la pilePivot dans la pileEnfants 
+			while($node->pilePivot->isVide() === false) {
+				$noeud = $pilePivot->depiler();
+				$node->pileEnfants->empiler($noeud);
+			}
+			unset($pilePivot);
+
 		}
 		echo $node->getValeur() .'<br>';
 	}
@@ -83,8 +103,23 @@ public  function parcourPostfixe(NoeudNomenclature $node) {
 
 	}
 
-	public function sauvegardeBranche() {
-
+	public function sauvegardeBranche($racine) {
+		if ($racine->pileEnfants !== null) {
+			$pilePivot = new Pile();
+			while($racine->pileEnfants->isVide() === false) {
+				$noeud = $racine->pileEnfants->depiler();
+				$this->manager->ecrire($racine->getId(), $noeud->getId()); // Ecriture dans la base
+				$pilePivot->empiler($noeud);
+				$node->parcourPrefixe($noeud);
+			}
+			// Reverser la pilePivot dans la pileEnfants
+			// Pour restaurer l'état de pileEnfant avant son parcours 
+			while($pilePivot->isVide() === false) {
+				$noeud = $pilePivot->depiler();
+				$node->pileEnfants->empiler($noeud);
+			}
+			unset($pilePivot);
+		}
 	} 
 	
 }
