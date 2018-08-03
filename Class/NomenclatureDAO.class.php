@@ -1,20 +1,20 @@
 <?php
 namespace Algo\Nomenclatures;
-
+// use Algo\NomenclatureDAO;
 class NomenclatureDAO {
 // test
 	private static $instance;
 	private $db;
 
 	public static function createDAO() {
-		if (self::$instace === null) {
+		if (self::$instance === null) {
 			$db = Connexion::connect();
-			self::$instance = new NomeclatureDAO($db);
+			self::$instance = new NomenclatureDAO($db);
 		}
-		return self::$instance  
+		return self::$instance;  
 	}
 
-	public function __construct() {
+	public function __construct($db) {
 		$this->db = $db;
 	}
 
@@ -23,7 +23,7 @@ class NomenclatureDAO {
 	public function ecrire($compose, $composant) {
 		$sql = 'INSERT INTO Nomenclatures (idCompose, idComposant) VALUES (:idCompose, :idComposant)';
 		$parametre = array(':idCompose' => $compose, ':idComposant' => $composant);
-		$statement = $db->prepare($sql);
+		$statement = $this->db->prepare($sql);
 		$statement->execute($parametre);
 	}
 

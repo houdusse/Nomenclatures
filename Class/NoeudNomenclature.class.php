@@ -11,6 +11,7 @@ namespace Algo\Nomenclatures;
 	Private $id;
 	private $valeur; // id du noeud 
 	private $pileEnfants;
+	private $manager;
 
 	public function __construct($id = null, $valeur = null, array $listeEnfants = null) {
 		if ($listeEnfants !== null) {
@@ -20,9 +21,14 @@ namespace Algo\Nomenclatures;
 			}
 		}
 		$this->valeur = $valeur;
-		$manager = NomenclatureDAO::createDAO();
+		$this->id = $id;
+		$this->manager = NomenclatureDAO::createDAO();
 	}
 
+
+	public function getId() {
+		return $this->id;
+	}
 
 	public function getValeur() {
 		return $this->valeur;
@@ -108,15 +114,16 @@ public  function parcourPostfixe(NoeudNomenclature $node) {
 			$pilePivot = new Pile();
 			while($racine->pileEnfants->isVide() === false) {
 				$noeud = $racine->pileEnfants->depiler();
+				// echo 'compose : ' .$racine->getId() .' et composant : ' .$noeud->getId() . '<br>';
 				$this->manager->ecrire($racine->getId(), $noeud->getId()); // Ecriture dans la base
 				$pilePivot->empiler($noeud);
-				$node->parcourPrefixe($noeud);
+				$noeud->sauvegardeBranche($noeud);
 			}
 			// Reverser la pilePivot dans la pileEnfants
 			// Pour restaurer l'état de pileEnfant avant son parcours 
 			while($pilePivot->isVide() === false) {
 				$noeud = $pilePivot->depiler();
-				$node->pileEnfants->empiler($noeud);
+				$this->pileEnfants->empiler($noeud);
 			}
 			unset($pilePivot);
 		}

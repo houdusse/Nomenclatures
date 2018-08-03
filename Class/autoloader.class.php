@@ -8,8 +8,10 @@ class MountLoader {
 	}
 
 	public static function autoload($class) {
+		echo 'class = ' .$class .'<br>';
 		$class = str_replace(__NAMESPACE__, '', $class);
-		require 'class/' .$class .'.class.php';
+		echo $class.'<br>';
+		require $class .'.class.php';
 	}
 }
 

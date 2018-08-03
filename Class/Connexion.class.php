@@ -11,7 +11,7 @@ class Connexion {
 		catch(Exception $e) {
 			die($e->getMessage());
 		}
-	return $this->DB;
+	return self::$DB;
 	}
 
 	public static function getDB() {

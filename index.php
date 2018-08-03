@@ -35,7 +35,7 @@ $node4->ajoutEnfants($tableau);
 
 $racine->parcourPrefixe($node4);
 $racine->parcourPrefixe($node4);
-
+$racine->sauvegardeBranche($racine);
 
 
 
